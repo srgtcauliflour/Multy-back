@@ -8,8 +8,10 @@ package multyback
 import (
 	"context"
 	"fmt"
+	"reflect"
 
-	// exchanger "github.com/Appscrunch/Multy-back-exchange-service"
+	exchanger "github.com/Appscrunch/Multy-back-exchange-service"
+	"github.com/Appscrunch/Multy-back-exchange-service/core"
 	"github.com/Appscrunch/Multy-back/btc"
 	"github.com/Appscrunch/Multy-back/client"
 	"github.com/Appscrunch/Multy-back/currencies"
@@ -52,6 +54,8 @@ type Multy struct {
 
 	BTC *btc.BTCConn
 	ETH *eth.ETHConn
+
+	Rates *exchanger.Exchanger
 }
 
 // Init initializes Multy instance
@@ -73,8 +77,29 @@ func Init(conf *Configuration) (*Multy, error) {
 	log.Infof("Mempool Data delete √")
 
 	// exchange rates
-	// exchange := &exchanger.Exchanger{}
-	// exchange.InitExchanger(conf.ExchangerConfiguration)
+	var configuration = core.ManagerConfiguration{}
+
+	// configuration.TargetCurrencies = []string{"BTC", "ETH", "GOLOS", "BTS", "STEEM", "WAVES", "LTC", "BCH", "ETC", "DASH", "EOS"}
+	// configuration.ReferenceCurrencies = []string{"USDT", "BTC"}
+	// configuration.Exchanges = []string{"Binance", "Bitfinex", "Gdax", "HitBtc", "Okex", "Poloniex"}
+	// configuration.RefreshInterval = 1
+
+	// dbConfig := core.DBConfiguration{}
+	// dbConfig.User = "postgres"
+	// dbConfig.Password = "postgres"
+	// dbConfig.Name = "test"
+
+	// conf.ExchangerConfiguration.DBConfiguration = dbConfig
+
+	fmt.Printf("jwjrwewfsdfsd---------------------------------- %v\n\n\n", reflect.DeepEqual(configuration.RefreshInterval, conf.ExchangerConfiguration.RefreshInterval))
+	log.Errorf("conf.ExchangerConfiguration !!!!!!!!!!!!!!!!!!!!!!! , %v", conf.ExchangerConfiguration)
+
+	// configuration.DBConfiguration = dbConfig
+	exchange := &exchanger.Exchanger{}
+	conf.ExchangerConfiguration.RefreshInterval = 1
+	exchange.InitExchanger(conf.ExchangerConfiguration)
+	// exchange.InitExchanger(configuration)
+	multy.Rates = exchange
 
 	//BTC
 	btcCli, err := btc.InitHandlers(&conf.Database, conf.SupportedNodes, conf.NSQAddress)
