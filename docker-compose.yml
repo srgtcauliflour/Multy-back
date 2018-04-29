@@ -1,21 +1,20 @@
-version: '3.4'
+version: '3.5'
 services:
   multy-back-stage:
     image:  multyio/multy-back:stage
-    # build: .
-    #command: ["make", "all"]
     env_file: .env
     network_mode: "host"
     volumes:
         - "${BACKEND_LOGS}:/go/src/github.com/Appscrunch/Multy-back/cmd/logs"
         - "${BACKEND_CONF}:/go/src/github.com/Appscrunch/Multy-back/cmd/multy.config"
-        #- "${BTCD_CERT}:/go/src/github.com/Appscrunch/Multy-back/cmd/rpc.cert"
     ports:
       - "6778:6778"
       - "6780:6780"
     depends_on:
       - btc-node-service-mainnet-stage
       - btc-node-service-testnet-stage
+      - eth-node-service-mainnet-stage
+      - eth-node-service-testnet-stage
       - nsq-stage
       - nsqlookup-stage
       - nsqadmin-stage
@@ -23,44 +22,63 @@ services:
 
 
   btc-node-service-mainnet-stage:
-    image: multyio/multy-btc-node-service
+    image: multyio/multy-btc-node-service:stage
     network_mode: "host"
     volumes:
       - "${BTCD_CERT}:/go/src/github.com/Appscrunch/Multy-BTC-node-service/cmd/rpc.cert"
       - "${BTC_NODE_SERVICE_MAINNET}:/go/src/github.com/Appscrunch/Multy-BTC-node-service/cmd/client.config"
     ports:
-      - "7000:7000"
+      - "7102:7002"
     depends_on:
       - nsq-stage
 
 
   btc-node-service-testnet-stage:
-    image: multyio/multy-btc-node-service
+    image: multyio/multy-btc-node-service:stage
     network_mode: "host"
     volumes:
       - "${BTC_NODE_SERVICE_TESTNET}:/go/src/github.com/Appscrunch/Multy-BTC-node-service/cmd/client.config"
       - "${BTCD_CERT}:/go/src/github.com/Appscrunch/Multy-BTC-node-service/cmd/rpc.cert"
     ports:
-      # - "6660:6660"
-      - "6000:6000"
+     - "6102:6002"
+    depends_on:
+     - nsq-stage
+
+  eth-node-service-mainnet-stage:
+    image: multyio/multy-eth-node-service:stage
+    network_mode: "host"
+    volumes:
+      - "${ETH_NODE_SERVICE_MAINNET}:/go/src/github.com/Appscrunch/Multy-BTC-node-service/cmd/client.config"
+    ports:
+      - "7101:7001"
     depends_on:
       - nsq-stage
 
-
+  eth-node-service-testnet-stage:
+    image: multyio/multy-eth-node-service:stage
+    network_mode: "host"
+    volumes:
+      - "${ETH_NODE_SERVICE_TESTNET}:/go/src/github.com/Appscrunch/Multy-BTC-node-service/cmd/client.config"
+    ports:
+      - "6101:6001"
+    depends_on:
+      - nsq-stage
 
   mongodb-stage:
     container_name: "mongo_db_stage"
     image: mongo:3.6.2
     env_file: .env
-    command: mongod --smallfiles
+    command: mongod --smallfiles --config /mongo/mongod.conf
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/data/logs
+      - MONGO_CONF_DIR=/mongo
     volumes:
       - ${MONGO_DATA_DIR}:/data/db
       - ${MONGO_LOG_DIR}:/data/logs
+      - ${MONGO_CONF_DIR}:/mongo
     ports:
-      - 27015:27017
+      - 15122:27017
 
   nsqlookup-stage:
     image: nsqio/nsq

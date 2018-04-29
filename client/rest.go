@@ -276,9 +276,6 @@ func changeName(cn ChangeName, token string, restClient *RestClient, c *gin.Cont
 	}
 	return restClient.userStore.Update(sel, update)
 
-	err := errors.New(msgErrNoWallet)
-	return err
-
 }
 
 func addAddressToWallet(address, token string, currencyID, networkid, walletIndex, addressIndex int, restClient *RestClient, c *gin.Context) error {
