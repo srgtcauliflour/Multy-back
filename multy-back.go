@@ -10,6 +10,7 @@ import (
 	"fmt"
 
 	exchanger "github.com/Appscrunch/Multy-back-exchange-service"
+	exchangeRates "github.com/Appscrunch/Multy-back-exchange-service/exchange-rates"
 	"github.com/Appscrunch/Multy-back/btc"
 	"github.com/Appscrunch/Multy-back/client"
 	"github.com/Appscrunch/Multy-back/currencies"
@@ -53,7 +54,8 @@ type Multy struct {
 	BTC *btc.BTCConn
 	ETH *eth.ETHConn
 
-	Rates *exchanger.Exchanger
+	Rates      *exchanger.Exchanger
+	ExchangeCh chan []*exchangeRates.Exchange
 }
 
 // Init initializes Multy instance
@@ -80,6 +82,21 @@ func Init(conf *Configuration) (*Multy, error) {
 	exchange.InitExchanger(conf.ExchangerConfiguration)
 	// exchange.InitExchanger(configuration)
 	multy.Rates = exchange
+	ch := make(chan []*exchangeRates.Exchange)
+	multy.ExchangeCh = ch
+	// 10 sec
+	go multy.Rates.Exchanger.Subscribe(multy.ExchangeCh, 10, []string{"BTC", "ETH"}, "USDT")
+
+	// WORK
+	go func() {
+		for ex := range ch {
+			for _, tic := range ex {
+				for name, _ := range tic.Tickers {
+					fmt.Printf("\n\n\n\n\nstockexchange %v %v\n\n\n\n", name, tic.Name)
+				}
+			}
+		}
+	}()
 
 	//BTC
 	btcCli, err := btc.InitHandlers(&conf.Database, conf.SupportedNodes, conf.NSQAddress)
@@ -221,7 +238,7 @@ func (multy *Multy) initHttpRoutes(conf *Configuration) error {
 
 	// socketIO server initialization. server -> mobile client
 	socketIORoute := router.Group("/socketio")
-	socketIOPool, err := client.SetSocketIOHandlers(socketIORoute, conf.SocketioAddr, conf.NSQAddress, multy.userStore)
+	socketIOPool, err := client.SetSocketIOHandlers(socketIORoute, multy.ExchangeCh, conf.SocketioAddr, conf.NSQAddress, multy.userStore)
 	if err != nil {
 		return err
 	}

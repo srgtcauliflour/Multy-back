@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	exchangeRates "github.com/Appscrunch/Multy-back-exchange-service/exchange-rates"
 	"github.com/Appscrunch/Multy-back/btc"
 	"github.com/Appscrunch/Multy-back/store"
 	"github.com/KristinaEtc/slf"
@@ -146,13 +147,13 @@ type SocketIOUser struct {
 	log slf.StructuredLogger
 }
 
-func newSocketIOUser(id string, newUser *SocketIOUser, conn *gosocketio.Channel, log slf.StructuredLogger) *SocketIOUser {
+func newSocketIOUser(id string, newUser *SocketIOUser, conn *gosocketio.Channel, log slf.StructuredLogger, ch chan []*exchangeRates.Exchange) *SocketIOUser {
 	newUser.conns = make(map[string]*gosocketio.Channel, 0)
 	newUser.conns[id] = conn
 	newUser.log = log.WithField("userID", newUser.userID)
 	newUser.closeCh = make(chan string, 0)
 
-	go newUser.runUpdateExchange()
+	go newUser.runUpdateExchange(ch)
 
 	return newUser
 }
@@ -166,9 +167,19 @@ func sendExchange(newUser *SocketIOUser, conn *gosocketio.Channel) {
 	conn.Emit(topicExchangePoloniex, poloniexRate)
 }
 
-func (sIOUser *SocketIOUser) runUpdateExchange() {
+func (sIOUser *SocketIOUser) runUpdateExchange(ch chan []*exchangeRates.Exchange) {
 	// sending data by ticket
 	sIOUser.tickerLastExchange = time.NewTicker(updateExchangeClient)
+
+	// go func() {
+	// 	for ex := range ch {
+	// 		for _, tic := range ex {
+	// 			for name, _ := range tic.Tickers {
+	// 				fmt.Printf("\n\nname = %v stockexchange %v\n\n", name, tic.Name)
+	// 			}
+	// 		}
+	// 	}
+	// }()
 
 	for {
 		select {
