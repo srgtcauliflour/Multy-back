@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 
+	exchangeRates "github.com/Appscrunch/Multy-back-exchange-service/exchange-rates"
 	"github.com/Appscrunch/Multy-back/store"
 	"github.com/gin-gonic/gin"
 	"github.com/graarh/golang-socketio/transport"
@@ -19,9 +20,6 @@ import (
 const (
 	socketIOOutMsg = "outcoming"
 	socketIOInMsg  = "incoming"
-
-	deviceTypeMac     = "mac"
-	deviceTypeAndroid = "android"
 
 	topicExchangeDay      = "exchangeDay"
 	topicExchangeGdax     = "exchangeGdax"
@@ -51,7 +49,7 @@ func getHeaderDataSocketIO(headers http.Header) (*SocketIOUser, error) {
 	}, nil
 }
 
-func SetSocketIOHandlers(r *gin.RouterGroup, address, nsqAddr string, ratesDB store.UserStore) (*SocketIOConnectedPool, error) {
+func SetSocketIOHandlers(r *gin.RouterGroup, ch chan []*exchangeRates.Exchange, address, nsqAddr string, ratesDB store.UserStore) (*SocketIOConnectedPool, error) {
 	server := gosocketio.NewServer(transport.GetDefaultWebsocketTransport())
 
 	pool, err := InitConnectedPool(server, address, nsqAddr, ratesDB)
@@ -62,7 +60,6 @@ func SetSocketIOHandlers(r *gin.RouterGroup, address, nsqAddr string, ratesDB st
 	if err != nil {
 		return nil, fmt.Errorf("exchange chart initialization: %s", err.Error())
 	}
-
 	pool.chart = chart
 
 	server.On(gosocketio.OnConnection, func(c *gosocketio.Channel) {
@@ -86,7 +83,7 @@ func SetSocketIOHandlers(r *gin.RouterGroup, address, nsqAddr string, ratesDB st
 		userFromPool, ok := pool.users[user.userID]
 		if !ok {
 			pool.log.Debugf("new user")
-			newSocketIOUser(connectionID, user, c, pool.log)
+			newSocketIOUser(connectionID, user, c, pool.log, ch)
 			pool.users[user.userID] = user
 			userFromPool = user
 		}

@@ -69,6 +69,20 @@ func main() {
 	if err != nil {
 		log.Fatalf("Server initialization: %s\n", err.Error())
 	}
+
+	// ch := make(chan []*exchangeRates.Exchange)
+	// go mu.Rates.Exchanger.Subscribe(ch, 1, []string{"BTC", "ETH"}, "USDT")
+
+	// go func() {
+	// 	for ex := range ch {
+	// 		for _, tic := range ex {
+	// 			for name, _ := range tic.Tickers {
+	// 				fmt.Printf("name = %v stockexchange %v\n", name, tic.Name)
+	// 			}
+	// 		}
+	// 	}
+	// }()
+
 	if err = mu.Run(); err != nil {
 		log.Fatalf("Server running: %s\n", err.Error())
 	}
