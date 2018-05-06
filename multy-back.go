@@ -87,8 +87,13 @@ func Init(conf *Configuration) (*Multy, error) {
 	go func() {
 		for ex := range ch {
 			for _, tic := range ex {
-				for name, _ := range tic.Tickers {
-					fmt.Printf("\n\n\n\n\nstockexchange %v %v\n\n\n\n", name, tic.Name)
+				for name, t := range tic.Tickers {
+					pr := store.ExchangeRatesRecord{
+						Exchanges:     store.ExchangeRates{},
+						Timestamp:     t.TimpeStamp.Unix(),
+						StockExchange: tic.Name,
+					}
+					fmt.Printf("stockexchange  %v", pr)
 				}
 			}
 		}
