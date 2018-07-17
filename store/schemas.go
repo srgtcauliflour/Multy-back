@@ -93,18 +93,6 @@ type Wallet struct {
 	Status string `bson:"status"`
 }
 
-type Multisig struct {
-	CurrencyID      int               `bson:"currencyID"`
-	NetworkID       int               `bson:"networkID"`
-	WalletName      string            `bson:"walletName"`
-	ContractAddress string            `bson:"walletName"`
-	TxOfCreation    string            `bson:"txofcreation"`
-	LastActionTime  int64             `bson:"lastActionTime"`
-	DateOfCreation  int64             `bson:"dateOfCreation"`
-	Owners          []AddressExtended `bson:"owners"`
-	Status          string            `bson:"status"`
-}
-
 type RatesRecord struct {
 	Category int    `json:"category" bson:"category"`
 	TxHash   string `json:"txHash" bson:"txHash"`

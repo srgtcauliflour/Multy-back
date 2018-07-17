@@ -156,16 +156,6 @@ func setExchangeRates(tx *store.MultyTX, isReSync bool, TxTime int64) {
 }
 
 func sendNotifyToClients(tx store.MultyTX, nsqProducer *nsq.Producer, netid int) {
-	// log.Infof("============\n")
-	// log.Infof("============\n")
-	// log.Infof(" Tx.TxAddress: %s", tx.TxAddress)
-	// log.Infof("============\n")
-	// log.Infof("============\n")
-	// log.Infof(" Tx.Input: %s", tx.WalletsInput)
-	// log.Infof(" Tx.Output: %s", tx.WalletsOutput)
-	// log.Infof("============\n")
-	// log.Infof("============\n")
-
 	for _, walletOutput := range tx.WalletsOutput {
 		txMsq := store.TransactionWithUserID{
 			UserID: walletOutput.UserId,
@@ -233,8 +223,7 @@ func sendNotify(txMsq *store.TransactionWithUserID, nsqProducer *nsq.Producer) {
 		log.Errorf("sendNotifyToClients: [%+v] %s\n", txMsq, err.Error())
 		return
 	}
-
-	log.Infof("THIS JSON IS: %s", newTxJSON)
+	
 	err = nsqProducer.Publish(store.TopicTransaction, newTxJSON)
 	if err != nil {
 		log.Errorf("nsq publish new transaction: [%+v] %s\n", txMsq, err.Error())

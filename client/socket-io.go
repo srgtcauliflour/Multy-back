@@ -97,12 +97,6 @@ func SetSocketIOHandlers(restClient *RestClient, BTC *btc.BTCConn, ETH *eth.ETHC
 	senders := []store.Sender{}
 
 	server.On(gosocketio.OnConnection, func(c *gosocketio.Channel) {
-		// pool.log.Debugf("connected: %s", c.Id())
-
-		// moved to next release
-		//ratesDay := pool.chart.getExchangeDay()
-		//c.Emit(topicExchangeDay, ratesDay)
-
 		user, err := getHeaderDataSocketIO(c.RequestHeader())
 		if err != nil {
 			pool.log.Errorf("get socketio headers: %s", err.Error())
@@ -129,7 +123,6 @@ func SetSocketIOHandlers(restClient *RestClient, BTC *btc.BTCConn, ETH *eth.ETHC
 		pool.log.Debugf("OnConnection done")
 	})
 
-	//TODO: feature logic
 
 	server.On(gosocketio.OnError, func(c *gosocketio.Channel) {
 		pool.log.Errorf("Error occurs %s", c.Id())
@@ -155,23 +148,8 @@ func SetSocketIOHandlers(restClient *RestClient, BTC *btc.BTCConn, ETH *eth.ETHC
 		}
 		receiversM.Unlock()
 
-		//TODO:
-		// wait for incoming tx
-
 		return "ok"
 	})
-
-	// go func() {
-	// 	for {
-	// 		receiversM.Lock()
-	// 		fmt.Println("+++++++++++++receivers", receivers)
-	// 		fmt.Println("+++++++++++++senders", senders)
-	// 		receiversM.Unlock()
-
-	// 		fmt.Println("restClient ", restClient)
-	// 		time.Sleep(7 * time.Second)
-	// 	}
-	// }()
 
 	server.On(SenderCheck, func(c *gosocketio.Channel, nearIDs store.NearVisible) []store.Receiver {
 		nearReceivers := []store.Receiver{}

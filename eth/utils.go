@@ -151,11 +151,6 @@ func setExchangeRates(tx *store.TransactionETH, isReSync bool, TxTime int64) {
 }
 
 func sendNotifyToClients(tx store.TransactionETH, nsqProducer *nsq.Producer, netid int) {
-	//TODO: make correct notify
-	log.Infof("============\n")
-	log.Infof("TX: %s, NetID: %v, UserID: %s", tx.Status, netid, tx.UserID)
-	log.Infof("============\n")
-
 	if tx.Status == store.TxStatusAppearedInBlockIncoming || tx.Status == store.TxStatusAppearedInMempoolIncoming || tx.Status == store.TxStatusInBlockConfirmedIncoming {
 		txMsq := store.TransactionWithUserID{
 			UserID: tx.UserID,

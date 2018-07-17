@@ -88,7 +88,6 @@ type UserStore interface {
 	FindUserDataChain(CurrencyID, NetworkID int) (map[string]AddressExtended, error)
 
 	FethUserAddresses(currencyID, networkID int, userid string, addreses []string) (AddressExtended, error)
-	// FindAllMultisigContracts( NetworkID int)
 
 	DeleteHistory(CurrencyID, NetworkID int, Address string) error
 

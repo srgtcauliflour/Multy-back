@@ -424,7 +424,7 @@ func (restClient *RestClient) addWallet() gin.HandlerFunc {
 
 		c.JSON(http.StatusCreated, gin.H{
 			"code":    code,
-			"tine":    time.Now().Unix(),
+			"time":    time.Now().Unix(),
 			"message": message,
 		})
 		return
@@ -511,7 +511,7 @@ func (restClient *RestClient) getServerConfig() gin.HandlerFunc {
 			},
 			"version": restClient.MultyVerison,
 			"ios": map[string]int{
-				"soft": 49,
+				"soft": 53,
 				"hard": 49,
 			},
 			"donate": restClient.donationAddresses,
@@ -668,7 +668,7 @@ func (restClient *RestClient) deleteWallet() gin.HandlerFunc {
 				})
 			}
 			if networkid == currencies.ETHTest {
-				restClient.ETH.CliTest.EventGetAdressBalance(context.Background(), &ethpb.AddressToResync{
+				balance, err = restClient.ETH.CliTest.EventGetAdressBalance(context.Background(), &ethpb.AddressToResync{
 					Address: address,
 				})
 			}
@@ -891,7 +891,6 @@ func (restClient *RestClient) getFeeRate() gin.HandlerFunc {
 				"message": http.StatusText(http.StatusOK),
 			})
 		case currencies.Ether:
-			//TODO: make eth feerate
 			var rate *ethpb.GasPrice
 			var err error
 			switch networkid {
@@ -911,23 +910,11 @@ func (restClient *RestClient) getFeeRate() gin.HandlerFunc {
 			case currencies.ETHMain:
 				c.JSON(http.StatusOK, gin.H{
 					"speeds": EstimationSpeeds{
-						VerySlow: speed / 2,
-						Slow:     speed,
-						Medium:   speed * 15 / 10,
-						Fast:     speed * 2,
-						VeryFast: speed * 25 / 10,
-					},
-					"code":    http.StatusOK,
-					"message": http.StatusText(http.StatusOK),
-				})
-			case currencies.ETHTest:
-				c.JSON(http.StatusOK, gin.H{
-					"speeds": EstimationSpeeds{
-						VerySlow: 1000000000,
-						Slow:     2000000000,
-						Medium:   3000000000,
-						Fast:     4000000000,
-						VeryFast: 5000000000,
+						VerySlow: speed * 6 / 10,
+						Slow:     speed * 8 / 10,
+						Medium:   speed,
+						Fast:     speed * 145 / 100,
+						VeryFast: speed * 2,
 					},
 					"code":    http.StatusOK,
 					"message": http.StatusText(http.StatusOK),
@@ -935,9 +922,18 @@ func (restClient *RestClient) getFeeRate() gin.HandlerFunc {
 			}
 
 		default:
-
+			c.JSON(http.StatusOK, gin.H{
+				"speeds": EstimationSpeeds{
+					VerySlow: 1000000000,
+					Slow:     2000000000,
+					Medium:   3000000000,
+					Fast:     4000000000,
+					VeryFast: 5000000000,
+				},
+				"code":    http.StatusOK,
+				"message": http.StatusText(http.StatusOK),
+			})
 		}
-
 	}
 }
 
@@ -1033,7 +1029,6 @@ type Payload struct {
 	WalletIndex         int      `json:"walletindex"`
 	Transaction         string   `json:"transaction"`
 	IsHD                bool     `json:"ishd"`
-	MultisigFactory     bool     `json:"multisigfactory"`
 	WalletName          string   `json:"walletname"`
 	Owners              []string `json:"owners"`
 	ConfirmationsNeeded int      `json:"confirmationsneeded"`
@@ -1303,6 +1298,7 @@ func (restClient *RestClient) getWalletVerbose() gin.HandlerFunc {
 			code = http.StatusOK
 			message = http.StatusText(http.StatusOK)
 			var av []AddressVerbose
+			var issyncing bool
 
 			query := bson.M{"devices.JWT": token}
 
@@ -1338,14 +1334,16 @@ func (restClient *RestClient) getWalletVerbose() gin.HandlerFunc {
 				}
 				// TODO:
 				_, sync := restClient.BTC.Resync.Load(address.Address)
+				if sync {
+					issyncing = true
+				}
 
 				av = append(av, AddressVerbose{
 					LastActionTime: address.LastActionTime,
 					Address:        address.Address,
 					AddressIndex:   address.AddressIndex,
 					Amount:         int64(checkBTCAddressbalance(address.Address, currencyId, networkId, restClient)),
-					SpendableOuts:  spOuts,
-					IsSyncing:      sync,
+					SpendableOuts:  spOuts,		
 				})
 			}
 			wv = append(wv, WalletVerbose{
@@ -1357,6 +1355,7 @@ func (restClient *RestClient) getWalletVerbose() gin.HandlerFunc {
 				DateOfCreation: wallet.DateOfCreation,
 				VerboseAddress: av,
 				Pending:        pending,
+				IsSyncing:      issyncing,
 			})
 			av = []AddressVerbose{}
 
@@ -1430,8 +1429,6 @@ func (restClient *RestClient) getWalletVerbose() gin.HandlerFunc {
 
 				p, _ := strconv.Atoi(amount.GetPendingBalance())
 				b, _ := strconv.Atoi(amount.GetBalance())
-				// pendingBalance = strconv.Itoa(p - b)
-				// pendingAmount = strconv.Itoa(p - b)
 
 				if p != b {
 					pending = true
@@ -1495,6 +1492,7 @@ type WalletVerbose struct {
 	DateOfCreation int64            `json:"dateofcreation"`
 	VerboseAddress []AddressVerbose `json:"addresses"`
 	Pending        bool             `json:"pending"`
+	IsSyncing	   bool 			`json:"issyncing"`
 }
 
 type WalletVerboseETH struct {
@@ -1619,10 +1617,10 @@ func (restClient *RestClient) getAllWalletsVerbose() gin.HandlerFunc {
 				for _, address := range wallet.Adresses {
 					spOuts := getBTCAddressSpendableOutputs(address.Address, wallet.CurrencyID, wallet.NetworkID, restClient)
 
-					//all user txs
+
 					err = restClient.userStore.GetAllWalletTransactions(user.UserID, wallet.CurrencyID, wallet.NetworkID, &userTxs)
 					if err != nil {
-						//empty history
+
 					}
 
 					for _, tx := range userTxs {
@@ -1634,13 +1632,8 @@ func (restClient *RestClient) getAllWalletsVerbose() gin.HandlerFunc {
 							}
 						}
 					}
-
-					// restClient.BTC.ResyncM.Lock()
-					// re := *restClient.BTC.Resync
-					// restClient.BTC.ResyncM.Unlock()
 					_, sync := restClient.BTC.Resync.Load(address.Address)
 
-					// sync := re[address.Address]
 
 					av = append(av, AddressVerbose{
 						LastActionTime: address.LastActionTime,
@@ -1708,8 +1701,6 @@ func (restClient *RestClient) getAllWalletsVerbose() gin.HandlerFunc {
 
 					p, _ := strconv.Atoi(amount.GetPendingBalance())
 					b, _ := strconv.Atoi(amount.GetBalance())
-					// pendingBalance = strconv.Itoa(p - b)
-					// pendingAmount = strconv.Itoa(p - b)
 
 					if p != b {
 						pending = true
@@ -1718,16 +1709,6 @@ func (restClient *RestClient) getAllWalletsVerbose() gin.HandlerFunc {
 					if p == b {
 						pendingBalance = "0"
 					}
-
-					//incoming
-					// if p > b{
-					// 	pendingBalance = "0"
-					// }
-
-					//outcoming
-					// if p < b{
-					// 	pendingBalance = "0"
-					// }
 
 					walletNonce = nonce.GetNonce()
 
@@ -1739,22 +1720,22 @@ func (restClient *RestClient) getAllWalletsVerbose() gin.HandlerFunc {
 						Nonce:          nonce.Nonce,
 					})
 
+					wv = append(wv, WalletVerboseETH{
+						WalletIndex:    wallet.WalletIndex,
+						CurrencyID:     wallet.CurrencyID,
+						NetworkID:      wallet.NetworkID,
+						Balance:        totalBalance,
+						PendingBalance: pendingBalance,
+						PendingAmount:  pendingAmount,
+						Nonce:          walletNonce,
+						WalletName:     wallet.WalletName,
+						LastActionTime: wallet.LastActionTime,
+						DateOfCreation: wallet.DateOfCreation,
+						VerboseAddress: av,
+						Pending:        pending,
+					})
 				}
-
-				wv = append(wv, WalletVerboseETH{
-					WalletIndex:    wallet.WalletIndex,
-					CurrencyID:     wallet.CurrencyID,
-					NetworkID:      wallet.NetworkID,
-					Balance:        totalBalance,
-					PendingBalance: pendingBalance,
-					PendingAmount:  pendingAmount,
-					Nonce:          walletNonce,
-					WalletName:     wallet.WalletName,
-					LastActionTime: wallet.LastActionTime,
-					DateOfCreation: wallet.DateOfCreation,
-					VerboseAddress: av,
-					Pending:        pending,
-				})
+				
 				av = []ETHAddressVerbose{}
 			default:
 
