@@ -12,15 +12,14 @@ import (
 )
 
 const (
+	TxStatusRejected = 0
 	TxStatusAppearedInMempoolIncoming = 1
 	TxStatusAppearedInBlockIncoming   = 2
-
 	TxStatusAppearedInMempoolOutcoming = 3
 	TxStatusAppearedInBlockOutcoming   = 4
-
 	TxStatusInBlockConfirmedIncoming  = 5
 	TxStatusInBlockConfirmedOutcoming = 6
-
+	
 	// ws notification topic
 	TopicTransaction = "TransactionUpdate"
 	TopicNewIncoming = "NewIncoming"

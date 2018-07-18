@@ -50,7 +50,7 @@ func (m *BTCTransaction) Reset()         { *m = BTCTransaction{} }
 func (m *BTCTransaction) String() string { return proto.CompactTextString(m) }
 func (*BTCTransaction) ProtoMessage()    {}
 func (*BTCTransaction) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{0}
+	return fileDescriptor_streamer_335f25b48513c137, []int{0}
 }
 func (m *BTCTransaction) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BTCTransaction.Unmarshal(m, b)
@@ -201,7 +201,7 @@ func (m *BTCTransaction_AddresAmount) Reset()         { *m = BTCTransaction_Addr
 func (m *BTCTransaction_AddresAmount) String() string { return proto.CompactTextString(m) }
 func (*BTCTransaction_AddresAmount) ProtoMessage()    {}
 func (*BTCTransaction_AddresAmount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{0, 0}
+	return fileDescriptor_streamer_335f25b48513c137, []int{0, 0}
 }
 func (m *BTCTransaction_AddresAmount) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BTCTransaction_AddresAmount.Unmarshal(m, b)
@@ -249,7 +249,7 @@ func (m *BTCTransaction_WalletForTx) Reset()         { *m = BTCTransaction_Walle
 func (m *BTCTransaction_WalletForTx) String() string { return proto.CompactTextString(m) }
 func (*BTCTransaction_WalletForTx) ProtoMessage()    {}
 func (*BTCTransaction_WalletForTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{0, 1}
+	return fileDescriptor_streamer_335f25b48513c137, []int{0, 1}
 }
 func (m *BTCTransaction_WalletForTx) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BTCTransaction_WalletForTx.Unmarshal(m, b)
@@ -316,7 +316,7 @@ func (m *AddSpOut) Reset()         { *m = AddSpOut{} }
 func (m *AddSpOut) String() string { return proto.CompactTextString(m) }
 func (*AddSpOut) ProtoMessage()    {}
 func (*AddSpOut) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{1}
+	return fileDescriptor_streamer_335f25b48513c137, []int{1}
 }
 func (m *AddSpOut) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AddSpOut.Unmarshal(m, b)
@@ -412,7 +412,7 @@ func (m *Resync) Reset()         { *m = Resync{} }
 func (m *Resync) String() string { return proto.CompactTextString(m) }
 func (*Resync) ProtoMessage()    {}
 func (*Resync) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{2}
+	return fileDescriptor_streamer_335f25b48513c137, []int{2}
 }
 func (m *Resync) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Resync.Unmarshal(m, b)
@@ -464,7 +464,7 @@ func (m *BlockHeight) Reset()         { *m = BlockHeight{} }
 func (m *BlockHeight) String() string { return proto.CompactTextString(m) }
 func (*BlockHeight) ProtoMessage()    {}
 func (*BlockHeight) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{3}
+	return fileDescriptor_streamer_335f25b48513c137, []int{3}
 }
 func (m *BlockHeight) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BlockHeight.Unmarshal(m, b)
@@ -504,7 +504,7 @@ func (m *ReqDeleteSpOut) Reset()         { *m = ReqDeleteSpOut{} }
 func (m *ReqDeleteSpOut) String() string { return proto.CompactTextString(m) }
 func (*ReqDeleteSpOut) ProtoMessage()    {}
 func (*ReqDeleteSpOut) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{4}
+	return fileDescriptor_streamer_335f25b48513c137, []int{4}
 }
 func (m *ReqDeleteSpOut) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReqDeleteSpOut.Unmarshal(m, b)
@@ -556,7 +556,7 @@ func (m *MempoolToDelete) Reset()         { *m = MempoolToDelete{} }
 func (m *MempoolToDelete) String() string { return proto.CompactTextString(m) }
 func (*MempoolToDelete) ProtoMessage()    {}
 func (*MempoolToDelete) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{5}
+	return fileDescriptor_streamer_335f25b48513c137, []int{5}
 }
 func (m *MempoolToDelete) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MempoolToDelete.Unmarshal(m, b)
@@ -597,7 +597,7 @@ func (m *WatchAddress) Reset()         { *m = WatchAddress{} }
 func (m *WatchAddress) String() string { return proto.CompactTextString(m) }
 func (*WatchAddress) ProtoMessage()    {}
 func (*WatchAddress) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{6}
+	return fileDescriptor_streamer_335f25b48513c137, []int{6}
 }
 func (m *WatchAddress) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_WatchAddress.Unmarshal(m, b)
@@ -657,7 +657,7 @@ func (m *MempoolRecord) Reset()         { *m = MempoolRecord{} }
 func (m *MempoolRecord) String() string { return proto.CompactTextString(m) }
 func (*MempoolRecord) ProtoMessage()    {}
 func (*MempoolRecord) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{7}
+	return fileDescriptor_streamer_335f25b48513c137, []int{7}
 }
 func (m *MempoolRecord) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MempoolRecord.Unmarshal(m, b)
@@ -701,7 +701,7 @@ func (m *Empty) Reset()         { *m = Empty{} }
 func (m *Empty) String() string { return proto.CompactTextString(m) }
 func (*Empty) ProtoMessage()    {}
 func (*Empty) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{8}
+	return fileDescriptor_streamer_335f25b48513c137, []int{8}
 }
 func (m *Empty) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Empty.Unmarshal(m, b)
@@ -732,7 +732,7 @@ func (m *RawTx) Reset()         { *m = RawTx{} }
 func (m *RawTx) String() string { return proto.CompactTextString(m) }
 func (*RawTx) ProtoMessage()    {}
 func (*RawTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{9}
+	return fileDescriptor_streamer_335f25b48513c137, []int{9}
 }
 func (m *RawTx) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RawTx.Unmarshal(m, b)
@@ -773,7 +773,7 @@ func (m *AddressToResync) Reset()         { *m = AddressToResync{} }
 func (m *AddressToResync) String() string { return proto.CompactTextString(m) }
 func (*AddressToResync) ProtoMessage()    {}
 func (*AddressToResync) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{10}
+	return fileDescriptor_streamer_335f25b48513c137, []int{10}
 }
 func (m *AddressToResync) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AddressToResync.Unmarshal(m, b)
@@ -832,7 +832,7 @@ func (m *UsersData) Reset()         { *m = UsersData{} }
 func (m *UsersData) String() string { return proto.CompactTextString(m) }
 func (*UsersData) ProtoMessage()    {}
 func (*UsersData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{11}
+	return fileDescriptor_streamer_335f25b48513c137, []int{11}
 }
 func (m *UsersData) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UsersData.Unmarshal(m, b)
@@ -872,7 +872,7 @@ func (m *AddressExtended) Reset()         { *m = AddressExtended{} }
 func (m *AddressExtended) String() string { return proto.CompactTextString(m) }
 func (*AddressExtended) ProtoMessage()    {}
 func (*AddressExtended) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{12}
+	return fileDescriptor_streamer_335f25b48513c137, []int{12}
 }
 func (m *AddressExtended) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AddressExtended.Unmarshal(m, b)
@@ -924,7 +924,7 @@ func (m *ReplyInfo) Reset()         { *m = ReplyInfo{} }
 func (m *ReplyInfo) String() string { return proto.CompactTextString(m) }
 func (*ReplyInfo) ProtoMessage()    {}
 func (*ReplyInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{13}
+	return fileDescriptor_streamer_335f25b48513c137, []int{13}
 }
 func (m *ReplyInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReplyInfo.Unmarshal(m, b)
@@ -965,7 +965,7 @@ func (m *ServiceVersion) Reset()         { *m = ServiceVersion{} }
 func (m *ServiceVersion) String() string { return proto.CompactTextString(m) }
 func (*ServiceVersion) ProtoMessage()    {}
 func (*ServiceVersion) Descriptor() ([]byte, []int) {
-	return fileDescriptor_streamer_251e065a582d5ab8, []int{14}
+	return fileDescriptor_streamer_335f25b48513c137, []int{14}
 }
 func (m *ServiceVersion) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ServiceVersion.Unmarshal(m, b)
@@ -1785,9 +1785,9 @@ var _NodeCommuunications_serviceDesc = grpc.ServiceDesc{
 	Metadata: "streamer.proto",
 }
 
-func init() { proto.RegisterFile("streamer.proto", fileDescriptor_streamer_251e065a582d5ab8) }
+func init() { proto.RegisterFile("streamer.proto", fileDescriptor_streamer_335f25b48513c137) }
 
-var fileDescriptor_streamer_251e065a582d5ab8 = []byte{
+var fileDescriptor_streamer_335f25b48513c137 = []byte{
 	// 1159 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x57, 0xdd, 0x6f, 0x1b, 0x45,
 	0x10, 0xcf, 0xf9, 0xe2, 0xaf, 0x71, 0xec, 0xa4, 0x9b, 0xd0, 0x9e, 0x2c, 0x04, 0xd6, 0x89, 0x48,
